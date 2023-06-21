@@ -8,7 +8,6 @@ import Speedometer, {
   Needle,
   Progress,
   Marks,
-  Indicator,
 } from 'react-native-cool-speedometer';
 import * as ScreenOrientation from 'expo-screen-orientation';
 
@@ -39,7 +38,7 @@ const App = () => {
         },
         (location: Location.LocationObject) => {
           if (location.coords && location.coords.speed && location.coords.speed > 0) {
-            setSpeed(location.coords.speed);
+            setSpeed(location.coords.speed * 3.6);
           } else {
             setSpeed(0);
           }
@@ -60,7 +59,7 @@ const App = () => {
 
   return (
     <View style={[styles.container, {
-      flexDirection: isPortrait ? 'column' : 'row',
+      flexDirection: isPortrait ? 'column' : 'row-reverse',
       justifyContent: isPortrait ? 'center' : 'space-evenly',
     }]}>
       <LinearGradient
@@ -73,17 +72,20 @@ const App = () => {
           height: '100%',
         }}
       />
-      <View style={styles.container}>
-        <Speedometer
-          value={speed}
-        >
-          <Background />
-          <Arc />
-          <Needle />
-          <Progress />
-          <Marks />
-        </Speedometer>
-        <Text style={styles.speed} numberOfLines={2}>{speed.toFixed(1)} km/h</Text>
+      <Speedometer
+        width={isPortrait ? 400 : 400}
+        height={isPortrait ? 400 : 400}
+        value={speed}
+      >
+        <Background />
+        <Arc />
+        <Needle />
+        <Progress />
+        <Marks />
+      </Speedometer>
+      <View style={styles.textContainer}>
+        <Text style={styles.speed} >{speed.toFixed(0)}</Text>
+        <Text style={styles.speed} >km/h</Text>
       </View>
     </View>
   );
@@ -97,16 +99,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  title: {
-    color: 'white',
-    fontSize: 30,
-    fontWeight: 'bold',
+  textContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+
   },
   speed: {
     color: 'white',
     fontSize: 70,
     fontWeight: 'bold',
-    marginTop: 20,
   },
 });
 
