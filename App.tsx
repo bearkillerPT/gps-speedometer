@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, ImageBackground } from 'react-native';
 import * as Location from 'expo-location';
-import { LinearGradient } from 'expo-linear-gradient';
+import { Dimensions } from 'react-native';
+
 import Speedometer, {
   Background,
   Arc,
@@ -55,39 +56,42 @@ const App = () => {
       subscription.remove();
     };
   }, []);
-
-
+  
+  const deviceWidth = Dimensions.get('window') ? isPortrait ? Dimensions.get('window').width * 0.8 : Dimensions.get('window').width * 0.4 : 300
+  const deviceHeight = Dimensions.get('window') ? isPortrait ? Dimensions.get('window').width * 0.8 : Dimensions.get('window').width * 0.4 : 300
   return (
-    <View style={[styles.container, {
-      flexDirection: isPortrait ? 'column' : 'row-reverse',
-      justifyContent: isPortrait ? 'center' : 'space-evenly',
-    }]}>
-      <LinearGradient
-        colors={['#4c669f', '#3b5998', '#192f6a']}
-        style={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          top: 0,
-          height: '100%',
-        }}
-      />
-      <Speedometer
-        width={isPortrait ? 400 : 400}
-        height={isPortrait ? 400 : 400}
-        value={speed}
-      >
-        <Background />
-        <Arc />
-        <Needle />
-        <Progress />
-        <Marks />
-      </Speedometer>
-      <View style={styles.textContainer}>
-        <Text style={styles.speed} >{speed.toFixed(0)}</Text>
-        <Text style={styles.speed} >km/h</Text>
+    <ImageBackground
+      source={require('./assets/dark_night_sky.jpg')}
+      resizeMode='stretch'
+    >
+      <View style={[styles.container, {
+        flexDirection: isPortrait ? 'column' : 'row-reverse',
+        justifyContent: isPortrait ? 'center' : 'space-evenly',
+      }]}>
+        <Speedometer
+          width={deviceWidth}
+          height={deviceHeight}
+          value={speed}
+          accentColor='rgb(100, 0, 8)'
+          >
+          <Background 
+            color='rgba(0, 90, 0, .6)'
+          />
+          <Arc 
+          stroke={'white'} />
+          <Needle 
+          color='rgb(200, 0, 32)' />
+          <Progress />
+          <Marks />
+        </Speedometer>
+        <View style={[styles.textContainer, {
+          marginRight: isPortrait ? 0 : 50,
+        }]}>
+          <Text style={styles.speed} >{speed.toFixed(0)}</Text>
+          <Text style={styles.speedUnit} >Km/h</Text>
+        </View>
       </View>
-    </View>
+    </ImageBackground>
   );
 };
 
@@ -103,11 +107,16 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-
+    padding: 20,
   },
   speed: {
     color: 'white',
     fontSize: 70,
+    fontWeight: 'bold',
+  },
+  speedUnit: {
+    color: 'white',
+    fontSize: 30,
     fontWeight: 'bold',
   },
 });
