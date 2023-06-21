@@ -19,7 +19,7 @@ interface LocationData {
 }
 
 const App = () => {
-  const [speed, setSpeed] = useState<number>(0);
+  const [locationObject, setLocationObject ] = useState<Location.LocationObject | undefined>(undefined);
   const [isPortrait, setIsPortrait] = useState<boolean>(true);
 
   useEffect(() => {
@@ -39,10 +39,13 @@ const App = () => {
         },
         (location: Location.LocationObject) => {
           if (location.coords && location.coords.speed && location.coords.speed > 0) {
-            setSpeed(location.coords.speed * 3.6);
-          } else {
-            setSpeed(0);
-          }
+            setLocationObject({...location, 
+              coords: {
+                ...location.coords,
+                speed: location.coords.speed * 3.6,
+              }
+            });
+          } 
         }
       );
     };
@@ -71,7 +74,7 @@ const App = () => {
         <Speedometer
           width={deviceWidth}
           height={deviceHeight}
-          value={speed}
+          value={locationObject?.coords?.speed || 0}
           accentColor='rgb(100, 0, 8)'
           >
           <Background 
@@ -87,8 +90,12 @@ const App = () => {
         <View style={[styles.textContainer, {
           marginRight: isPortrait ? 0 : 50,
         }]}>
-          <Text style={styles.speed} >{speed.toFixed(0)}</Text>
+          <Text style={styles.speed} >{(locationObject?.coords.speed ?? 0).toFixed(0)}</Text>
           <Text style={styles.speedUnit} >Km/h</Text>
+          <View>
+            <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>Latitude:     {locationObject?.coords.latitude.toFixed(6) ?? "waiting..."}</Text>
+            <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>Longitude: {locationObject?.coords.longitude.toFixed(6) ?? "waiting..."} </Text>
+          </View>
         </View>
       </View>
     </ImageBackground>
@@ -111,7 +118,7 @@ const styles = StyleSheet.create({
   },
   speed: {
     color: 'white',
-    fontSize: 70,
+    fontSize: 90,
     fontWeight: 'bold',
   },
   speedUnit: {
