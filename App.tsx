@@ -14,17 +14,14 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 import SettingsModal from './src/Components/SettingsModal';
 import { Settings, defaultSettings, loadSettings, saveSettings } from './src/Utils/SettingsMemory';
 
-interface LocationData {
-  coords: {
-    speed: number;
-  };
-}
-
 const App = () => {
   const [locationObject, setLocationObject] = useState<Location.LocationObject | undefined>(undefined);
   const [isPortrait, setIsPortrait] = useState<boolean>(true);
   const [isSettingsModalVisible, setIsSettingsModalVisible] = useState<boolean>(false);
   const [settings, setSettings] = useState<Settings>(defaultSettings);
+  // BRRR
+  const [focusMode, setFocusMode] = useState<boolean>(false);
+
   useEffect(() => {
     loadSettings().then((loadedSettings) => {
       if (loadedSettings) {
@@ -72,8 +69,8 @@ const App = () => {
   }, []);
   const deviceWidth = Dimensions.get('window') ? isPortrait ? Dimensions.get('window').width * 0.8 : Dimensions.get('window').width * 0.4 : 300
   const deviceHeight = Dimensions.get('window') ? isPortrait ? Dimensions.get('window').width * 0.8 : Dimensions.get('window').width * 0.4 : 300
-  
-  const calculateSpeed = (speed: number, settings: Settings) => { 
+
+  const calculateSpeed = (speed: number, settings: Settings) => {
     switch (settings.speedUnit) {
       case 'Km/h':
         return speed * 3.6;
@@ -83,10 +80,18 @@ const App = () => {
         return speed * 2.236936;
       default:
         return speed * 3.6;
-    }    
+    }
   };
   return (
-    <>
+    <TouchableOpacity activeOpacity={1} onPress={
+      () => {
+        setFocusMode(!focusMode);
+        setSettings({
+          ...settings,
+          fontSize: !focusMode ? settings.fontSize * 1.8 : settings.fontSize / 1.8,
+        });
+      }
+    }>
       <ImageBackground
         source={require('./assets/dark_night_sky.jpg')}
         resizeMode='stretch'
@@ -105,26 +110,27 @@ const App = () => {
           flexDirection: isPortrait ? 'column' : 'row-reverse',
           justifyContent: isPortrait ? 'center' : 'space-evenly',
         }]}>
-          <Speedometer
-            width={deviceWidth}
-            height={deviceHeight}
-            value={locationObject?.coords?.speed || 0}
-            accentColor='rgb(100, 0, 8)'
-          >
-            <Background
-              color='rgba(0, 90, 0, .6)'
-            />
-            <Arc
-              stroke={'white'} />
-            <Needle
-              color='rgb(200, 0, 32)' />
-            <Progress />
-            <Marks />
-          </Speedometer>
+          {!focusMode &&
+            <Speedometer
+              width={deviceWidth}
+              height={deviceHeight}
+              value={locationObject?.coords?.speed || 0}
+              accentColor='rgb(100, 0, 8)'
+            >
+              <Background
+                color='rgba(0, 90, 0, .6)'
+              />
+              <Arc
+                stroke={'white'} />
+              <Needle
+                color='rgb(200, 0, 32)' />
+              <Progress />
+              <Marks />
+            </Speedometer>}
           <View style={[styles.textContainer, {
             marginRight: isPortrait ? 0 : 50,
           }]}>
-            <Text style={[styles.speed, {
+            <Text numberOfLines={1} allowFontScaling adjustsFontSizeToFit style={[styles.speed, {
               fontSize: settings?.fontSize ?? 80,
             }]} >{(locationObject?.coords.speed ?? 0).toFixed(0)}</Text>
             <Text style={styles.speedUnit} >{settings.speedUnit}</Text>
@@ -144,7 +150,7 @@ const App = () => {
           setIsSettingsModalVisible(true);
         }} />
       }
-    </>
+    </TouchableOpacity>
   );
 };
 
