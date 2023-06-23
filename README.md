@@ -7,7 +7,8 @@ I created the project using Expo and React Native because these are the tools I'
 ## Description
 This is a simple speedometer app that uses the GPS sensor to calculate the speed of the device. It also shows the current location of the device in terms of latitude and longitude. The app displays the speed in big and bold text and also has a react-native-cool-speedometer :) 
 You can configure the speed unit and the font size of the speed text.
-
+FOCUS MODE: 
+The app has a focus mode that will make the speed text bigger. This is useful when you want to use the app while driving. You can enable the focus mode by pressing the focus button anywhere on the screen. 
 ## Screenshots
 Images with limited size:
 ![Portrait Screenshot](assets/screenshots/screenshot1.png)
