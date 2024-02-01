@@ -30,10 +30,19 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": ["android.permission.CAMERA", "android.permission.ACCESS_FINE_LOCATION"]
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ],
+      "package": "com.bearkiller.gpsspeedometer"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "19b19f04-4f68-4754-aae7-4a970e187d44"
+      }
     }
   }
 }
