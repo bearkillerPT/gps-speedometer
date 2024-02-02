@@ -1,0 +1,2 @@
+No information is collected from the user. 
+The application requires location permission to get the user's location.
